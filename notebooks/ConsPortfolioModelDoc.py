@@ -24,30 +24,6 @@ import numpy as np
 from HARK.ConsumptionSaving.ConsPortfolioModel import PortfolioSolution
 print(PortfolioSolution.__init__.__doc__)
 
-# %% [markdown]
-# We implement three different ways to allow portfolio choice.
-#            The agent can choose 
-#               * any portfolio share ('continuous choice')
-#               * only a specified set of portfolio shares ('discrete choice')
-#                 * With probability 1 (agent always gets to choose)
-#                 * With probability 0 < p < 1 (stochastic chance to choose)
-#         
-#            We allow two choices for the description of the 
-#            distribution of the stochastic variable:
-#            1. A generic discrete probability distribution
-#               * Nodes and their probabilities are specified
-#            2. A true lognormal distribution
-#               * The mean return and the standard deviation are specified
-#         
-#            In the discrete portfolio shares case, the user also must
-#            input a function that *draws* from the distribution in drawRiskyFunc
-#
-#            Other assumptions: 
-#               * distributions are time constant
-#               * probability of being allowed to reoptimize is time constant
-#                  * If p < 1, you must specify the PortfolioSet discretely
-#         
-
 # %% {"code_folding": []}
 # Set up the model and its parameters
 Avg = 1.08 # equity premium 
@@ -69,6 +45,9 @@ init_portfolio['BoroCnstArt']     = 0.0 # important for theoretical reasons
 # init_portfolio['vFuncBool'] = True # We do not need value function for purposes here
 pcct = cpm.PortfolioConsumerType(**init_portfolio)
 
+# %%
+RiskyDstnFunc(30)
+
 # %% {"code_folding": []}
 # Solve the model under the given parameters
 
@@ -80,7 +59,7 @@ plt.ylim(0,1.05)
 plt.text(5,0.5,r'$\uparrow $ limit as  $m \uparrow \infty$',fontsize = 22,fontweight='bold')
 plt.show()
 
-# %% {"code_folding": [0]}
+# %% {"code_folding": []}
 # Simulate 10 years of behavior according to the model
 
 pcct.track_vars = ['aNrmNow', 't_age', 'RiskyShareNow']
@@ -162,7 +141,7 @@ plt.show()
 
 init_portfolio_prb = copy.deepcopy(init_portfolio)
 
-init_portfolio_prb['AdjustPrb'] = 1.0
+init_portfolio_prb['AdjustPrb'] = 0.8
 init_portfolio_prb['PortfolioDomain'] = cpm.DiscreteDomain([0.0, 0.6, 1.0])
 pcct_prb = cpm.PortfolioConsumerType(**init_portfolio_prb)
 
